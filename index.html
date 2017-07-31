@@ -1,0 +1,210 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <!--Import Google Icon Font-->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+      <link type="text/css" rel="stylesheet" href="assets/materialize/css/materialize.min.css"  media="screen,projection"/>
+      <!-- Import personal css -->
+      <link type='text/css' rel='stylesheet' href='assets/css/style.css'>
+
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+
+    <body class='flow-text'>
+		
+		<!-- SIDE NAV -->
+		<ul id="slide-out" class="side-nav">	
+			
+		</ul>
+		<!-- Click icon to open side nav -->   
+		
+		<!-- NAV BAR -->
+
+		<nav class='indigo'>
+			<div class="nav-wrapper">
+			  <a href="javascript:void(0)" class="brand-logo"><i class='material-icons'>assignment</i> Flashcard Application</a>
+			  <ul id="nav-mobile" class="right hide-on-small-only">
+			  <li>
+			   	
+			   </li>
+			   <li>
+			    <a href="javascript:void(0)" class='switch-cloze waves-effect waves-light'><b>Cloze</b></a>
+			    <li>
+			    <a href="javascript:void(0)" data-activates="slide-out" class="waves-effect waves-light button-collapse show-on-large"><i class="large material-icons">list</i></a>
+			    </li>
+			    <li>
+			   	<!-- Signin Modal Trigger -->
+				  <a id='modal-signin-btn' class="waves-effect waves-light modal-trigger" href="#modal-signin"><b>Sign In</b></a>
+			   </li>
+			   <li>
+				  <a id='signout' class="waves-effect waves-light modal-trigger" href="javascript:void(0)"><b>Sign Out</b></a>
+			   </li>
+
+			  </ul>
+			</div>
+		</nav>
+
+		<!-- HELP MODAL -->
+
+		  <!-- Modal Trigger -->
+		  <a id='modal-help-btn' class="waves-effect waves-light modal-trigger indigo-text text-darken-4" href="#modal-help"><i class='material-icons'>help</i></a>
+
+		  <!-- Modal Structure -->
+		  <div id="modal-help" class="modal">
+		    <div class="modal-content">
+		      <h4>Flash Card Shortkeys</h4>
+		      <p><b>Left/Right Arrows: </b>switching between cards</p>
+		      <p><b>Tab: </b> toggle front and back input boxes when focusing on input fields</p>
+		      <p><b>Alt: </b>function btn when focusing on input fields</p>
+		      <p class='fn-btn'><b>+ 1: </b>red font</p>
+		      <p class='fn-btn'><b>+ 2: </b>blue font</p>
+		      <p class='fn-btn'><b>+ 3:</b> green font</p>
+		      <p class='fn-btn'><b>+ 4:</b> black font (Default)</p>
+		      <p class='fn-btn'><b>+ 5:</b> toggle between basic and cloze cards</p>
+		    </div>
+		    <div class="modal-footer">
+		      <a href="#!" class="modal-action modal-close waves-effect waves-indigo btn-flat">Close</a>
+		    </div>
+		  </div>
+
+		<!-- Signin MODAL -->
+
+		  <!-- Modal Structure -->
+		  <div id="modal-signin" class="modal">
+		    <div class="modal-content">
+		    <h5>Sign in with current account</h5>
+		       <div class="row">
+				    <form class="col s12">
+				     <div class="row">
+				        <div class="input-field col s12">
+				          <input id="signin-email" type="email" class="validate">
+				          <label for="signin-email">Email</label>
+				        </div>
+				      </div>
+				      <div class="row">
+				        <div class="input-field col s12">
+				          <input id="signin-password" type="password" class="validate">
+				          <label for="signin-password">Password</label>
+				        </div>
+				      </div>
+				    </form>
+
+				    <div class='row' id='signin-submit-wrapper'>
+				      <div class='center modal-action waves-effect waves-indigo btn-flat' id='signin-submit'>Sign In</div>
+				      <p class='center text-signin'>Don't have an account?</p>
+				       <p class='center text-signin'>
+				       	<a id='modal-signup-btn' href="#modal-signup"><b>Sign Up</b></a>
+				       	<p class='center text-signin' id='signin-error'></p>
+				       </p>
+
+				    </div>
+
+				  </div>
+		    </div>
+		  </div>
+
+		<!-- Signup MODAL -->
+
+		  <!-- Modal Structure -->
+		  <div id="modal-signup" class="modal">
+		    <div class="modal-content">
+		    <h5>Sign Up as New User</h5>
+		       <div class="row">
+				    <form class="col s12">
+				      <div class="row">
+				        <div class="input-field col s6">
+				          <input id="signup-first_name" type="text" class="validate">
+				          <label for="signup-first_name">First Name</label>
+				        </div>
+				        <div class="input-field col s6">
+				          <input id="signup-last_name" type="text" class="validate">
+				          <label for="signup-last_name">Last Name</label>
+				        </div>
+				      </div>
+				      <div class="row">
+				        <div class="input-field col s12">
+				          <input id="signup-password" type="password" class="validate">
+				          <label for="signup-password">Password</label>
+				        </div>
+				      </div>
+				      <div class="row">
+				        <div class="input-field col s12">
+				          <input id="signup-email" type="email" class="validate">
+				          <label for="signup-email">Email</label>
+				        </div>
+				      </div>
+				    </form>
+				  </div>
+		    </div>
+		    <div class="modal-footer">
+		      <a href="#!" class="modal-action waves-effect waves-indigo btn-flat" id="signup-submit">Submit</a>
+		    </div>
+		  </div>
+
+		<!-- MAIN CONTENT  -->
+		<div class="container">
+			<!-- Page Content goes here -->
+		    <div class="col s12 m5" id="main-content">
+	     	     <div class="row valign-wrapper">
+	     	     	  <div class='col s2 m2 center'>
+	     	     	  	<a href='javascript:void(0)'><i class='large material-icons indigo-text text-darken-4' id='move-left'>chevron_left</i></a>
+	     	     	  </div>
+	     	     	  <div class='col s8 m8'>
+				          <div class="card white">
+				            <div class="card-content" id='flashcard-content'>
+				            	<div class='card-text-wrapper valign-wrapper' id='1'>
+					              <p class='card-text card-text-front center' id='text-front-1'>I am a very simple card. You can put anything you want here  You can put anything you want here </p>
+					              <p class='card-text card-text-back center' id='text-back-1'>I am a very simple card. You can put anything you want here  You can put anything you want here </p>
+								</div>
+				            </div>
+				            <div class="card-action">
+				              <ul class='left color-list-wrapper'>
+				              	<li class='color-list red-text' data-color='red'><a href='#'><i class='material-icons'>lens</i></a></li>
+				              	<li class='color-list blue-text' data-color='blue'><a href='#'><i class='material-icons'>lens</i></a></li>
+				              	<li class='color-list green-text' data-color='green'><a href='#'><i class='material-icons'>lens</i></a></li>
+				              	<li class='color-list' data-color='black'><a href='#'><i class='material-icons'>lens</i></a></li>
+				              	<li class='switch-card' data-state='basic'><span id='card-state-basic' data-state="basic">Basic</span><span> | </span><span id='card-state-cloze' data-state='cloze'>Cloze</span></li>
+				              </ul>
+				              <span class='grey-text right card-count'>1/1</span>
+				            </div>
+				          </div>
+				      </div>
+				      <div class='col s2 m2 center'>
+				      	<a href='javascript:void(0)'><i class='large material-icons indigo-text text-darken-4' id='move-right'>chevron_right</i></a>
+				      </div>
+			      </div>
+				
+				<form>
+	   			  <div class="row">
+			        <div class="input-field col s12">
+			          <input id="front" type="text" autofocus>
+			          <label for="front">Front</label>
+			        </div>
+			      </div>
+
+			      <div class="row">
+			        <div class="input-field col s12">
+			          <input id="back" type="text">
+			          <label for="back">Back</label>
+			        </div>
+			      </div>
+				</form>	
+   			 </div>
+		</div>
+
+		<!--Import jQuery before materialize.js-->
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="assets/materialize/js/materialize.min.js"></script>
+		<!-- import firebase js -->
+		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-database.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-messaging.js"></script>
+		<!-- import personal js -->
+		<script type="text/javascript" src="assets/js/logic.js"></script>
+    </body>
+  </html>

@@ -1,0 +1,169 @@
+/*Materialize Classes*/
+.row{margin-bottom:10px;}
+
+
+/*Side Nav*/
+#slide-out{
+	background: rgba(255,255,255,.8);
+}
+
+.side-nav-thumbnail{
+	width:90%;
+	height: 9rem;
+    font-size: 1rem;
+    text-align: center;
+    border: 1px solid black;
+    margin: 1rem auto;
+    background-color: white
+}
+
+.side-nav-thumbnail-text{
+	margin:auto;
+	font:grey;
+}
+
+/*Top Nav*/
+.nav-wrapper{
+	margin:0 10px;
+}
+
+#signout{
+	display:none;
+}
+#modal-signin-btn{
+	display:none;
+}
+
+/*MODAL*/
+
+.modal{
+	max-height: 85%
+}
+
+/*modal help*/
+#modal-help-btn{
+	position: absolute;
+	bottom: .2rem;
+	left: .5rem;
+}
+
+#modal-help{
+	font-size:1rem;
+}
+
+/*modal sign in*/
+#signin-submit{
+	display:block;
+	margin:auto;
+}
+
+#signin-error{
+	color:red;
+}
+
+
+
+.text-signin{font-size:1rem;}
+
+#signin-submit{font-size:1.5rem;}
+
+/*CARDS INTERACTIONS*/
+
+.fn-btn{
+	margin-left:2rem;
+}
+
+/*Main Content*/
+#main-content{
+	margin:1.5rem 0 0 0 ;	
+}
+
+/*Chevrons*/
+
+#move-left,#move-right{
+	transition: opacity .75s ease;
+	margin:auto;
+	border-radius: 3rem;
+}
+
+#move-left:hover,#move-right:hover{
+	opacity: .3;
+}
+
+/*Index Card*/
+.card{
+	margin:auto;
+	width:100%;
+	position:relative;
+}
+
+.card-text-wrapper{
+	height:14rem;
+	overflow: hidden;
+}
+
+.card .card-content p{
+	margin:auto;
+}
+
+.card-text-front{
+	font-weight:bold;	
+}
+
+.card-text-back{
+	display:none;
+}
+
+.card .card-action{
+	overflow:auto;
+	padding:5px 10px;
+}
+
+.color-list-wrapper{
+	margin:0;
+}
+
+.color-list{
+	display:inline;
+	margin:0;
+	padding:0;	
+	height:auto;	
+}
+
+li .material-icons{
+	vertical-align: middle;
+}
+
+.switch-card{
+	display:inline-block; 
+	font-size:1rem;
+	vertical-align: middle
+}
+
+#card-state-basic{
+	font-weight:bold;
+}
+
+.card .card-action a:not(.btn):not(.btn-large):not(.btn-large):not(.btn-floating) {
+	color:inherit;
+	margin:inherit;
+	padding:inherit;
+}
+
+.card .card-action a:not(.btn):not(.btn-large):not(.btn-large):not(.btn-floating):hover{
+	color:inherit;
+	opacity:.3;
+}
+/*Input Field*/
+
+#front:focus,#back:focus{
+		border-bottom: 1px solid #1a237e;
+		box-shadow: 0 1px 0 0 #1a237e;
+}
+
+#front:focus + label,#back:focus + label{
+	color:#1a237e;
+}
+
+
+

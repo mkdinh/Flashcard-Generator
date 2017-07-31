@@ -24,19 +24,19 @@ var ClozeCard = function(text,cloze){
 //  * The constructed object should have a `fullText` property that contains _only_ the full text.
 }
 
- var firstPresidentCloze = ClozeCard(
-    "George Washington was the first president of the United States.", "George Washington");
+//  var firstPresidentCloze = ClozeCard(
+//     "George Washington was the first president of the United States.", "George Washington");
 
-// "George Washington"
-console.log(firstPresidentCloze.cloze); 
+// // "George Washington"
+// console.log(firstPresidentCloze.cloze); 
 
-// " ... was the first president of the United States.
-console.log(firstPresidentCloze.partial); 
+// // " ... was the first president of the United States.
+// console.log(firstPresidentCloze.partial); 
 
-// "George Washington was the first president of the United States.
-console.log(firstPresidentCloze.fullText); 
+// // "George Washington was the first president of the United States.
+// console.log(firstPresidentCloze.fullText); 
 
-// Should throw or log an error because "oops" doesn't appear in "This doesn't work"
-var brokenCloze = ClozeCard("This doesn't work", "oops");
-console.log(brokenCloze)
+// // Should throw or log an error because "oops" doesn't appear in "This doesn't work"
+// var brokenCloze = ClozeCard("This doesn't work", "oops");
+// console.log(brokenCloze)
 module.exports = ClozeCard;

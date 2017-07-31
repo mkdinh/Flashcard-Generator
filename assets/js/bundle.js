@@ -1,7 +1,74 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+
+// * This file should define a Node module that exports a constructor for creating basic flashcards, e.g.:
+//   `module.exports = BasicCard;`
+var BasicCard = function(front,back){
+// * The constructor should accept two arguments: `front` and `back`.
+	this.front = front;
+// * The constructed object should have a `front` property that contains the text on the front of the card.
+	this.back = back;
+// * The constructed object should have a `back` property that contains the text on the back of the card.
+}
+//   ex: 
+
+// var firstPresident = new BasicCard(
+//  "Who was the first president of the United States?", "George Washington");
+
+// "Who was the first president of the United States?"
+// console.log(firstPresident.front); 
+
+// "George Washington"
+// console.log(firstPresident.back); 
+
+module.exports = BasicCard;
+},{}],2:[function(require,module,exports){
+ // * This file should define a Node module that exports a constructor for creating cloze-deletion flashcards, e.g.:
+ //    `module.exports = ClozeCard;`
+
+var ClozeCard = function(text,cloze){
+
+	if (!(this instanceof ClozeCard)){
+        return new ClozeCard(text,cloze);
+   	}
+
+	var checkMatch = new RegExp(cloze,'gi'); 
+	if(!text.match(checkMatch)){
+		console.log("'" + cloze + "' is not part of " + "'" + text + "'");
+		return;
+	}
+//  * The constructor should throw or log an error when the cloze deletion does _not_ appear in the input text.
+	
+//  * Use prototypes to attach these methods, wherever possible.
+//  * The constructor should accept two arguments: `text` and `cloze`.
+	this.cloze = cloze;
+//  * The constructed object should have a `cloze` property that contains _only_ the cloze-deleted portion of the text.
+	this.partial = text.replace(cloze,' ... ');
+//  * The constructed object should have a `partial` property that contains _only_ the partial text.
+	this.fullText = text;
+//  * The constructed object should have a `fullText` property that contains _only_ the full text.
+}
+
+//  var firstPresidentCloze = ClozeCard(
+//     "George Washington was the first president of the United States.", "George Washington");
+
+// // "George Washington"
+// console.log(firstPresidentCloze.cloze); 
+
+// // " ... was the first president of the United States.
+// console.log(firstPresidentCloze.partial); 
+
+// // "George Washington was the first president of the United States.
+// console.log(firstPresidentCloze.fullText); 
+
+// // Should throw or log an error because "oops" doesn't appear in "This doesn't work"
+// var brokenCloze = ClozeCard("This doesn't work", "oops");
+// console.log(brokenCloze)
+module.exports = ClozeCard;
+},{}],3:[function(require,module,exports){
 // ---------------- INTIAL VARIABLES ----------------------
 
-// var basic = require('./BasicCard.js');
-// var cloze = require('./ClozeCard.js');
+var basic = require('./BasicCard.js');
+var cloze = require('./ClozeCard.js');
 
 var database;
 var curCard = 1;
@@ -225,16 +292,15 @@ $(document).ready(function(){
     })
 
     // Hide front or back if the other is focused
-    $('#front').on('focusin', function(){
-        console.log('focused front')
+    $('#front').is(':focus', function(){
+        console.log('inside function fosuced')
         $('#text-back-' + curCard).css('display','none');
         $('#text-front-' + curCard).css('display','block');
     });
 
-    $('#back').on('focusin', function(){
-        console.log('focused back')
-        $('#text-back-' + curCard).css('display','block')
-        $('#text-front-' + curCard).css('display','none')
+    $('#back').is(':focus', function(){
+        $('#text-back-' + curCard).css('display','none')
+        $('#text-front-' + curCard).css('display','block')
     });
 
     // toggle between front and back on tab 
@@ -253,3 +319,5 @@ $(document).ready(function(){
 })
 
 
+
+},{"./BasicCard.js":1,"./ClozeCard.js":2}]},{},[3]);

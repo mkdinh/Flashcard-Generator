@@ -10,13 +10,13 @@ var BasicCard = function(front,back){
 }
 //   ex: 
 
-var firstPresident = new BasicCard(
- "Who was the first president of the United States?", "George Washington");
+// var firstPresident = new BasicCard(
+//  "Who was the first president of the United States?", "George Washington");
 
-"Who was the first president of the United States?"
-console.log(firstPresident.front); 
+// "Who was the first president of the United States?"
+// console.log(firstPresident.front); 
 
-"George Washington"
-console.log(firstPresident.back); 
+// "George Washington"
+// console.log(firstPresident.back); 
 
 module.exports = BasicCard;

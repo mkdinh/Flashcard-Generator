@@ -1,11 +1,11 @@
 // ---------------- INTIAL VARIABLES ----------------------
 
-// var basic = require('./BasicCard.js');
-// var cloze = require('./ClozeCard.js');
+var basic = require('./BasicCard.js');
+var cloze = require('./ClozeCard.js');
 
 var database;
-var curCard = 1;
-var totalCard = 1;
+var curCard;
+var totalCard;
 var userInfo;
 
 // document ready function
@@ -33,17 +33,8 @@ $(document).ready(function(){
 
         firebase.auth().createUserWithEmailAndPassword(email,pass)
         .then(function(user){
-            
-            // set firebase profile to input name 
             user.updateProfile({
                 displayName: $('#signup-first_name').val().trim()
-            })
-
-            // create initial object with uid in database
-            database.ref('users').child(user.uid).set({
-                name: user.displayName,
-                email: user.email,
-                card: {}
             })
 
             $('#modal-signup').modal('close');
@@ -102,9 +93,7 @@ $(document).ready(function(){
             console.log(user)
             userInfo = user;
             // Materialize.toast(message, displayLength, className, completeCallback);
-            setTimeout(function(){
-                Materialize.toast('Hello ' + user.displayName, 4000)
-            },500) // 4000 is the duration of the toast
+            Materialize.toast('Hello ' + user.displayName, 4000) // 4000 is the duration of the toast
             
             // hide signin btn/show signout btn
             $('#modal-signin-btn').hide()
@@ -127,33 +116,12 @@ $(document).ready(function(){
 
     // create new card when press right
     $(window).keydown('alt',function(e){
-        if(e.which === 39){
-            if(curCard === totalCard){
+        if(e.which === 37){
 
-            // create new wrapper for card
-            var textWrapper = $('<div>');
-            textWrapper.addClass('card-text-wrapper valign-wrapper');
-            textWrapper.attr('id','card-'+totalCard)
-
-            // new front
-            var front = $('<p>');
-            front.addClass('card-text card-text-front center');
-            front.attr('id','text-front-'+totalCard)
-            textWrapper.append(front)
-
-            // new back
-             var back = $('<p>');
-            back.addClass('card-text card-text-back center');
-            back.attr('id','text-back-'+totalCard)
-            textWrapper.append(back)
-
-            }else{
-
-            }
         }
 
     // show previous card when press left
-        if(e.which === 37){
+        if(e.which === 39){
 
         }
     })
@@ -176,19 +144,6 @@ $(document).ready(function(){
     $('.modal').modal();
     $('#modal-signup-btn').click(function(){
     $('#modal-signup').modal('open');
-    })
-
-    // texts on front and back input field show on card
-    $('.input-field').keydown(function(e){
-        if($('#front').is(':focus')){
-            var text = $('#front').val().trim();
-            $('#text-front-'+curCard).text(text)
-        }
-        if($('#back').is(':focus')){
-            var text = $('#back').val().trim();
-            console.log(text)
-            $('#text-back-'+curCard).text(text)
-        }
     })
 
     // onkeypress function if input field is focused
@@ -224,28 +179,15 @@ $(document).ready(function(){
 
     })
 
-    // Hide front or back if the other is focused
-    $('#front').on('focusin', function(){
-        console.log('focused front')
-        $('#text-back-' + curCard).css('display','none');
-        $('#text-front-' + curCard).css('display','block');
-    });
-
-    $('#back').on('focusin', function(){
-        console.log('focused back')
-        $('#text-back-' + curCard).css('display','block')
-        $('#text-front-' + curCard).css('display','none')
-    });
-
     // toggle between front and back on tab 
     $('.input-field').keydown(function(e){      
         if(e.which === 9){
             if($('#front').is(':focus')){
-                e.preventDefault();
+                    e.preventDefault();
                 $('#back').focus();
             }
             else{
-                e.preventDefault();
+                    e.preventDefault();
                 $('#front').focus();
             }
         }

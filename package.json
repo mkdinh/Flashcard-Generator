@@ -24,7 +24,7 @@
   "watchify": "latest"
 },
 "scripts": {
-  "build-js": "browserify js/logic.js > js/bundle.js",
-  "watch-js": "watchify js/logic.js -o js/bundle.js"
+  "build-js": "browserify assets/js/logic.js -o assets/js/bundle.js",
+  "watch-js": "watchify assets/js/logic.js -o assets/js/bundle.js"
 }
 }

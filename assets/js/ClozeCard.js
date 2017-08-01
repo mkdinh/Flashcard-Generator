@@ -2,18 +2,17 @@
  //    `module.exports = ClozeCard;`
 
 var ClozeCard = function(text,cloze,num){
-
 	if (!(this instanceof ClozeCard)){
-        return new ClozeCard(text,cloze);
+        return new ClozeCard(text,cloze,num);
    	}
 
-	var checkMatch = new RegExp(cloze,'gi'); 
+	var checkMatch = new RegExp(cloze,'gi');
 	if(!text.match(checkMatch)){
 		console.log("'" + cloze + "' is not part of " + "'" + text + "'");
-		return;
+		return false;
 	}
 //  * The constructor should throw or log an error when the cloze deletion does _not_ appear in the input text.
-	
+
 //  * Use prototypes to attach these methods, wherever possible.
 //  * The constructor should accept two arguments: `text` and `cloze`.
 	this.cloze = cloze;
@@ -23,19 +22,21 @@ var ClozeCard = function(text,cloze,num){
 	this.fullText = text;
 //  * The constructed object should have a `fullText` property that contains _only_ the full text.
 	this.num = num;
+
+	this.type = 'cloze'
 }
 
 //  var firstPresidentCloze = ClozeCard(
 //     "George Washington was the first president of the United States.", "George Washington");
 
 // // "George Washington"
-// console.log(firstPresidentCloze.cloze); 
+// console.log(firstPresidentCloze.cloze);
 
 // // " ... was the first president of the United States.
-// console.log(firstPresidentCloze.partial); 
+// console.log(firstPresidentCloze.partial);
 
 // // "George Washington was the first president of the United States.
-// console.log(firstPresidentCloze.fullText); 
+// console.log(firstPresidentCloze.fullText);
 
 // // Should throw or log an error because "oops" doesn't appear in "This doesn't work"
 // var brokenCloze = ClozeCard("This doesn't work", "oops");

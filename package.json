@@ -1,4 +1,4 @@
-{
+  {
   "name": "flashcard-generator",
   "version": "1.0.0",
   "description": "",
@@ -19,5 +19,12 @@
   "dependencies": {
     "browserify": "^14.4.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+  "browserify": "latest",
+  "watchify": "latest"
+},
+"scripts": {
+  "build-js": "browserify js/logic.js > js/bundle.js",
+  "watch-js": "watchify js/logic.js -o js/bundle.js"
+}
 }

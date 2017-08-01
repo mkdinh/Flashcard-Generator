@@ -1,16 +1,16 @@
-// ---------------- INTIAL VARIABLES ----------------------
-
-// var basic = require('./BasicCard.js');
-// var cloze = require('./ClozeCard.js');
-
-var database;
-var curCard = 1;
-var totalCard = 1;
-var userInfo;
-
 // document ready function
 $(document).ready(function(){
 
+    // ---------------- INTIAL VARIABLES ----------------------
+
+    var basic = require('./BasicCard.js');
+    var cloze = require('./ClozeCard.js');
+
+    var database;
+    var cardContent
+    var curCard = 1;
+    var totalCard = 1;
+    var userInfo;
 
 // ---------------- FIREBASE AUTH APPLICATIONS ----------------------
 
@@ -129,7 +129,7 @@ $(document).ready(function(){
     $(window).keydown('alt',function(e){
         if(e.which === 39){
             if(curCard === totalCard){
-
+            // save previous card;
             // create new wrapper for card
             var textWrapper = $('<div>');
             textWrapper.addClass('card-text-wrapper valign-wrapper');
@@ -175,20 +175,25 @@ $(document).ready(function(){
     // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
     $('.modal').modal();
     $('#modal-signup-btn').click(function(){
-    $('#modal-signup').modal('open');
+        $('#modal-signup').modal('open');
     })
 
     // texts on front and back input field show on card
-    $('.input-field').keydown(function(e){
+    $('.input-field').keyup(function(e){
         if($('#front').is(':focus')){
             var text = $('#front').val().trim();
             $('#text-front-'+curCard).text(text)
         }
         if($('#back').is(':focus')){
             var text = $('#back').val().trim();
-            console.log(text)
             $('#text-back-'+curCard).text(text)
         }
+    })
+
+    // focus on load
+    $(window).on('load',function(){
+        $('#front').focus();
+        console.log('hey you')
     })
 
     // onkeypress function if input field is focused
@@ -208,17 +213,34 @@ $(document).ready(function(){
         }
 
     // change type card of alt + 5
-        if(e.which === 53)  {
-            console.log(e.which)
+        if(e.which === 53){
             if($('.switch-card').attr('data-state') === 'basic'){  
                 $('#card-state-basic').css('font-weight','normal');
                 $('#card-state-cloze').css('font-weight','bold');
                 $('.switch-card').attr('data-state','cloze')
+
+                $('#front-label').text('Full Text');
+                $('#back-label').text('Cloze');
+
+                var fullText = $('#front').val().trim();
+                var clozeText = $('#back').val().trim();
+                cardContent = cloze(fullText,clozeText,totalCard)
+                console.log(cardContent)
+
             }
             else{
                 $('#card-state-basic').css('font-weight','bold');
                 $('#card-state-cloze').css('font-weight','normal');
-                $('.switch-card').attr('data-state','basic')
+                $('.switch-card').attr('data-state','basic');
+
+                $('#front-label').text('Front');
+                $('#back-label').text('Back');
+
+                var front = $('#front').val().trim();
+                var back = $('#back').val().trim();
+
+                cardContent = basic(front,back,totalCard)
+                console.log(cardContent)
             }
         }
 
@@ -226,13 +248,11 @@ $(document).ready(function(){
 
     // Hide front or back if the other is focused
     $('#front').on('focusin', function(){
-        console.log('focused front')
         $('#text-back-' + curCard).css('display','none');
         $('#text-front-' + curCard).css('display','block');
     });
 
     $('#back').on('focusin', function(){
-        console.log('focused back')
         $('#text-back-' + curCard).css('display','block')
         $('#text-front-' + curCard).css('display','none')
     });

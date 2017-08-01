@@ -1,7 +1,7 @@
  // * This file should define a Node module that exports a constructor for creating cloze-deletion flashcards, e.g.:
  //    `module.exports = ClozeCard;`
 
-var ClozeCard = function(text,cloze){
+var ClozeCard = function(text,cloze,num){
 
 	if (!(this instanceof ClozeCard)){
         return new ClozeCard(text,cloze);
@@ -22,6 +22,7 @@ var ClozeCard = function(text,cloze){
 //  * The constructed object should have a `partial` property that contains _only_ the partial text.
 	this.fullText = text;
 //  * The constructed object should have a `fullText` property that contains _only_ the full text.
+	this.num = num;
 }
 
 //  var firstPresidentCloze = ClozeCard(

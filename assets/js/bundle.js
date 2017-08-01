@@ -93,11 +93,31 @@ $(document).ready(function(){
     var cardContainer
 
     // ---------------- Functions ----------------------
+    function createInitialCard(){
+         // create new html wrapper for card
+         var textWrapper = $('<div>');
+         textWrapper.addClass('card-text-wrapper valign-wrapper');
+         textWrapper.attr('id','card-1');
+
+         // new front
+         var front = $('<p>');
+         front.addClass('card-text card-text-front center');
+         front.attr('id','text-front-1');
+         textWrapper.append(front);
+
+         // new back
+         var back = $('<p>');
+         back.addClass('card-text card-text-back center');
+         back.attr('id','text-back-1');
+         textWrapper.append(back);
+
+         $('#flashcard-content').append(textWrapper);
+         console.log(textWrapper)
+    }
 
     function uploadCardFirebase(){
          // get current type
-         console.log(cardContainer,curCard,totalCard)
-
+         console.log(curType)
         // save previous card to firebase
         var curFrontText = $('#front').val().trim();
         var curBackText = $('#back').val().trim();
@@ -123,6 +143,9 @@ $(document).ready(function(){
          var frontText = $('#text-front-'+curCard).text();
          var backText = $('#text-back-'+curCard).text();
 
+         // update curType
+         curType = cardContainer[curCard].type;
+         // update input fields
          $('#front').val(frontText);
          $('#back').val(backText);
 
@@ -250,6 +273,7 @@ $(document).ready(function(){
     // observe state change of user
     firebase.auth().onAuthStateChanged(function(user){
         if(user){
+            $('#flashcard-content').empty();
             userInfo = user;
             // Materialize.toast(message, displayLength, className, completeCallback);
             setTimeout(function(){
@@ -271,26 +295,8 @@ $(document).ready(function(){
 
                     // create new card
                     cardContainer[1] = basic('','',curCard);
-                    uploadCardFirebase()
-
-                    // create new html wrapper for card
-                    var textWrapper = $('<div>');
-                    textWrapper.addClass('card-text-wrapper valign-wrapper');
-                    textWrapper.attr('id','card-1');
-
-                    // new front
-                    var front = $('<p>');
-                    front.addClass('card-text card-text-front center');
-                    front.attr('id','text-front-1');
-                    textWrapper.append(front);
-
-                    // new back
-                    var back = $('<p>');
-                    back.addClass('card-text card-text-back center');
-                    back.attr('id','text-back-1');
-                    textWrapper.append(back);
-
-                    $('#flashcard-content').append(textWrapper);
+                    uploadCardFirebase();
+                    createInitialCard();
                }
                // else load firebase data
                else{
@@ -299,7 +305,7 @@ $(document).ready(function(){
                     totalCard = cardContainer.length-1;
                     curCard = totalCard;
                     curType = cardContainer[totalCard].type;
-                    console.log('total-card',totalCard)
+                    console.log(cardContainer)
 
                     for(i = 1; i <= totalCard; i++){
                          // create new wrapper for card
@@ -341,10 +347,28 @@ $(document).ready(function(){
                     updatecurContent()
                }
             })
+
+          // update cardContainer on change of any child of user cards
+          database.ref('users').child(userInfo.uid).child('cards').on('value', function(snap){
+               cardContainer = snap.val()
+               console.log(cardContainer)
+            })
         }
         else{
-            $('#modal-signin-btn').show()
-            $('#signout').hide()
+          // if user is not signed in
+            $('#modal-signin-btn').show();
+            $('#signout').hide();
+
+            curType = 'basic';
+            curCard = 1;
+            totalCard = 1;
+            cardContainer = [];
+            $('#flashcard-content').empty();
+            createInitialCard();
+
+            $('.card-count').text('1/1')
+            $('#front').val('');
+            $('#back').val('');
         }
     });
 
@@ -426,7 +450,7 @@ $(document).ready(function(){
                     curCard--;
                }
 
-               var checkupdate = updatecurContent();
+               updatecurContent();
           }
     })
     // update sidenav

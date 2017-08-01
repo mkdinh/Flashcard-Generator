@@ -34,7 +34,6 @@ $(document).ready(function(){
          textWrapper.append(back);
 
          $('#flashcard-content').append(textWrapper);
-         console.log(textWrapper)
     }
 
     function uploadCardFirebase(){
@@ -61,10 +60,18 @@ $(document).ready(function(){
     }
 
     function updatecurContent(){
+        console.log(cardContainer[curCard]);
+        console.log(curCard);
+        curType = cardContainer[curCard].type;
          // update input fields with card content
-         var frontText = $('#text-front-'+curCard).text();
-         var backText = $('#text-back-'+curCard).text();
-
+         if (curType === 'basic'){
+              var frontText = cardContainer[curCard].front;
+              var backText = cardContainer[curCard].back;
+         }
+         if (curType === 'cloze'){
+              var frontText = cardContainer[curCard].fullText;
+              var backText = cardContainer[curCard].cloze;
+         }
          // update curType
          curType = cardContainer[curCard].type;
          // update input fields
@@ -79,7 +86,6 @@ $(document).ready(function(){
 
        // refocus front input
        $('#front').focus();
-       console.log(curType)
 
          if(curType  === 'cloze'){
             $('#card-state-basic').css('font-weight','normal');
@@ -222,7 +228,6 @@ $(document).ready(function(){
                }
                // else load firebase data
                else{
-                    console.log('inside firebase data retrieval')
                     cardContainer = snap.child('cards').val();
                     totalCard = cardContainer.length-1;
                     curCard = totalCard;
@@ -359,14 +364,12 @@ $(document).ready(function(){
           if(e.altKey && e.which === 37){
                var updated = uploadCardFirebase();
                if(!updated){return}
-
                // hide current page
                $('#card-'+curCard).hide();
 
                if(curCard === 1){
                     // if card is at the first one, go to the last card
                     curCard = totalCard;
-                    console.log(curCard,totalCard)
                }else{
         		     // decrease current page by 1
                     curCard--;
@@ -398,14 +401,30 @@ $(document).ready(function(){
 
     // texts on front and back input field show on card
     $('.input-field').keyup(function(e){
-        if($('#front').is(':focus')){
-            var text = $('#front').val().trim();
-            $('#text-front-'+curCard).text(text)
-        }
-        if($('#back').is(':focus')){
-            var text = $('#back').val().trim();
-            $('#text-back-'+curCard).text(text)
-        }
+        if(curType === 'basic'){
+             if($('#front').is(':focus')){
+                 var text = $('#front').val().trim();
+                 $('#text-front-'+curCard).text(text)
+             }
+             if($('#back').is(':focus')){
+                 var text = $('#back').val().trim();
+                 $('#text-back-'+curCard).text(text)
+            }
+       }
+
+       if(curType === 'cloze'){
+            if($('#front').is(':focus')){
+               var text = $('#front').val().trim().toLowerCase();
+               var cloze = $('#back').val().trim().toLowerCase();
+               var partial = text.replace(cloze,'...');
+               $('#text-front-'+curCard).text(partial)
+
+            }
+            if($('#back').is(':focus')){
+               var text = $('#back').val().trim();
+               $('#text-back-'+curCard).text(text)
+          }
+     }
     })
 
     // onkeypress function if input field is focused
@@ -435,8 +454,9 @@ $(document).ready(function(){
                 $('#back-label').text('Cloze');
                 curType = 'cloze';
 
+
             }
-            else{
+            else if($('.switch-card').attr('data-state') === 'cloze'){
                 $('#card-state-basic').css('font-weight','bold');
                 $('#card-state-cloze').css('font-weight','normal');
                 $('.switch-card').attr('data-state','basic');
@@ -444,7 +464,9 @@ $(document).ready(function(){
                 $('#front-label').text('Front');
                 $('#back-label').text('Back');
                 curType = 'basic';
+
             }
+          database.ref('users').child(userInfo.uid).child('cards').child(curCard).update({'type':curType})
         }
 
     })

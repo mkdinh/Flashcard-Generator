@@ -75,7 +75,7 @@ $(document).ready(function(){
 
          // update CurColor
          curColor = cardContainer[curCard].color;
-         console.log(curColor);
+ 
          // update input fields
          $('#front').val(frontText);
          $('#back').val(backText);
@@ -85,7 +85,7 @@ $(document).ready(function(){
 
        // update card count
        $('.card-count').html(curCard+ '/' + totalCard)
-
+       console.log(curCard,totalCard)
        // refocus front input
        $('#front').focus();
 
@@ -109,6 +109,90 @@ $(document).ready(function(){
             curType = 'basic';
          }
      }
+
+    function createCard(){
+        // hide current card
+        $('#card-'+curCard).hide();
+
+        // increase totalcard & curCard and set current card to max cards
+        totalCard++;
+        curCard = totalCard;
+
+        // create new card
+        var textWrapper = $('<div>');
+        textWrapper.addClass('card-text-wrapper valign-wrapper');
+        textWrapper.attr('id','card-'+totalCard);
+
+        // new front
+        var front = $('<p>');
+        front.addClass('card-text card-text-front center');
+        front.attr('id','text-front-'+totalCard);
+        textWrapper.append(front);
+
+        // new back
+        var back = $('<p>');
+        back.addClass('card-text card-text-back center');
+        back.attr('id','text-back-'+totalCard);
+        textWrapper.append(back);
+
+        // empty input fields
+        $('#front').val('');
+        $('#back').val('');
+
+        // append new card to html
+        $('#flashcard-content').prepend(textWrapper);
+
+        // create new card object to firebase
+        uploadCardFirebase();
+    }
+
+    function moveRight(){
+        var updated = uploadCardFirebase();
+        if(!updated){return}
+
+        if(curCard === totalCard){
+            // hide content
+            $('#card-'+curCard).hide();
+
+            // set current card to max card
+            curCard = 1;
+            }else{
+                // hide current page
+                $('#card-'+curCard).hide();
+
+                // increase current page by 1
+                curCard++;
+            }    
+
+            // update card html
+            updatecurContent()
+
+            // show previous page
+            $('#card-'+curCard).show();
+
+            // update card count
+            $('.card-count').html(curCard+ '/' + totalCard)
+
+            // refocus front input
+            $('#front').focus();
+    }
+
+    function moveLeft(){
+       var updated = uploadCardFirebase();
+       if(!updated){return}
+       // hide current page
+       $('#card-'+curCard).hide();
+
+       if(curCard === 1){
+            // if card is at the first one, go to the last card
+            curCard = totalCard;
+       }else{
+             // decrease current page by 1
+            curCard--;
+       }
+
+       updatecurContent();
+    }
 
 
 
@@ -235,12 +319,14 @@ $(document).ready(function(){
                     curCard = totalCard;
                     curType = cardContainer[totalCard].type;
                     curColor = cardContainer[totalCard].color;
+
                     for(i = 1; i <= totalCard; i++){
                          // create new wrapper for card
                          var textWrapper = $('<div>');
                          textWrapper.addClass('card-text-wrapper valign-wrapper');
                          textWrapper.attr('id','card-'+i);
                          textWrapper.css('color',cardContainer[i].color);
+
                          // hide all card except the last ones
                          if(i < totalCard){
                               textWrapper.hide();
@@ -249,14 +335,22 @@ $(document).ready(function(){
                          var front = $('<p>');
                          front.addClass('card-text card-text-front center');
                          front.attr('id','text-front-'+i);
-                         front.append(cardContainer[i].front)
-                         textWrapper.append(front);
-
+    
                          // new back
                          var back = $('<p>');
                          back.addClass('card-text card-text-back center');
                          back.attr('id','text-back-'+i);
-                         back.append(cardContainer[i].back)
+                         
+                         if(cardContainer[i].type === 'basic'){
+                            front.text(cardContainer[i].front);
+                            back.text(cardContainer[i].back);
+                         }
+                         if(cardContainer[i].type === 'cloze'){
+                            front.text(cardContainer[i].partial);
+                            back.text(cardContainer[i].cloze);
+                         }
+
+                         textWrapper.append(front)
                          textWrapper.append(back);
 
                          $('#flashcard-content').append(textWrapper);
@@ -264,13 +358,13 @@ $(document).ready(function(){
 
                     // update input field
                     if(cardContainer[totalCard].type === 'basic'){
-                      front.text(cardContainer[totalCard].front);
-                      back.text(cardContainer[totalCard].back);
+                      $('#front').val(cardContainer[totalCard].front);
+                      $('#back').val(cardContainer[totalCard].back);
                     }else if(cardContainer[totalCard].type === 'cloze'){
-                      front.text(cardContainer[totalCard].fullText);
-                      back.text(cardContainer[totalCard].cloze);
+                      $('#front').val(cardContainer[totalCard].fullText);
+                      $('#back').val(cardContainer[totalCard].cloze);
                     }
-                    console.log(curColor)
+  
                     // update current content
                     updatecurContent()
                }
@@ -305,83 +399,37 @@ $(document).ready(function(){
 
     // ---------------- FIREBASE DATABASE APPLICATIONS ---------------------
 
-    // create new card when press right
+    // create new card when press ctrl + n
     $(window).keydown(function(e){
+        if(e.altKey && e.which === 78){
+            e.preventDefault();
+
+            // create new Card
+            createCard();
+
+            // update current content
+            updatecurContent();
+            }
+
          if(e.altKey && e.which === 39){
-            e.preventDefault()
-             var updated = uploadCardFirebase();
-             if(!updated){return}
-
-              if(curCard === totalCard){
-                    // hide content
-                    $('#card-'+curCard).hide();
-
-                    // increase totalcard & curCard
-                    curCard++;
-                    totalCard++;
-
-                    // create new card
-                    var textWrapper = $('<div>');
-                    textWrapper.addClass('card-text-wrapper valign-wrapper');
-                    textWrapper.attr('id','card-'+totalCard);
-
-                    // new front
-                    var front = $('<p>');
-                    front.addClass('card-text card-text-front center');
-                    front.attr('id','text-front-'+totalCard);
-                    textWrapper.append(front);
-
-                    // new back
-                    var back = $('<p>');
-                    back.addClass('card-text card-text-back center');
-                    back.attr('id','text-back-'+totalCard);
-                    textWrapper.append(back);
-
-                    // empty input fields
-                    $('#front').val('');
-                    $('#back').val('');
-
-                    // append new card to html
-                    $('#flashcard-content').prepend(textWrapper);
-               }else{
-                    // hide current page
-                    $('#card-'+curCard).hide();
-
-                    // increase current page by 1
-                    curCard++;
-                    // update card html
-                    updatecurContent()
-               }
-
-               // show previous page
-              $('#card-'+curCard).show();
-
-              // update card count
-              $('.card-count').html(curCard+ '/' + totalCard)
-
-              // refocus front input
-              $('#front').focus();
-          }
+            e.preventDefault();
+            moveRight();
+            }
 
           // show previous card when press left
           if(e.altKey && e.which === 37){
-               var updated = uploadCardFirebase();
-               if(!updated){return}
-               // hide current page
-               $('#card-'+curCard).hide();
-
-               if(curCard === 1){
-                    // if card is at the first one, go to the last card
-                    curCard = totalCard;
-               }else{
-        		     // decrease current page by 1
-                    curCard--;
-               }
-
-               updatecurContent();
+            e.preventDefault();
+            moveLeft();
           }
     })
-    // update sidenav
+    
+    //toggle click on arrow to key press arrow fn
+    $("#move-left").click(function(){
+        moveLeft();
+    })
+    $("#move-right").click(function(){
+        moveRight();
+    })
 
     // ---------------- HTML DOM INTERACTIONS ----------------------
 
@@ -426,8 +474,8 @@ $(document).ready(function(){
             if($('#back').is(':focus')){
                var text = $('#back').val().trim();
                $('#text-back-'+curCard).text(text)
-          }
-     }
+            }
+        }
     })
 
     // onkeypress function if input field is focused

@@ -389,8 +389,8 @@ $(document).ready(function(){
           // update cardContainer on change of any child of user cards
           database.ref('users').child(userInfo.uid).child('cards').on('value', function(snap){
                cardContainer = snap.val()
-
             })
+
         }
         else{
           // if user is not signed in
@@ -412,6 +412,7 @@ $(document).ready(function(){
             $('#front').val('');
             $('#back').val('');
         }
+
     });
 
 

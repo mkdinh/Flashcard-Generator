@@ -8,11 +8,12 @@ $(document).ready(function(){
 
     var database;
     var curType;
+    var curColor = 'black';
     var cardContent;
     var curCard;
     var totalCard;
     var userInfo;
-    var cardContainer
+    var cardContainer;
 
     // ---------------- Functions ----------------------
     function createInitialCard(){
@@ -44,10 +45,10 @@ $(document).ready(function(){
         var curBackText = $('#back').val().trim();
 
         if(curType === 'basic'){
-            cardContent = basic(curFrontText,curBackText,curCard);
+            cardContent = basic(curFrontText,curBackText,curCard,curColor);
         }
         else if(curType === 'cloze'){
-            cardContent = cloze(curFrontText,curBackText,curCard);
+            cardContent = cloze(curFrontText,curBackText,curCard,curColor);
         }
         if(!$.isEmptyObject(cardContent)){
              database.ref('users').child(userInfo.uid).child('cards').child(cardContent.num).set(cardContent);
@@ -239,7 +240,7 @@ $(document).ready(function(){
                          var textWrapper = $('<div>');
                          textWrapper.addClass('card-text-wrapper valign-wrapper');
                          textWrapper.attr('id','card-'+i);
-
+                         textWrapper.css('color',cardContainer[i].color);
                          // hide all card except the last ones
                          if(i < totalCard){
                               textWrapper.hide();
@@ -431,16 +432,20 @@ $(document).ready(function(){
     $('.input-field').keydown(function(e){
     // change color on alt + 1-4
         if(e.altKey && e.which === 49){
-            $('.card-text-wrapper').css('color','red');
+            $('#card-' + curCard).css('color','red');
+            curColor = 'red';
         }
         if(e.altKey && e.which === 50){
-            $('.card-text-wrapper').css('color','blue');
+            $('#card-' + curCard).css('color','blue');
+            curColor = 'blue';
         }
         if(e.altKey && e.which === 51){
-             $('.card-text-wrapper').css('color','green');
+             $('#card-' + curCard).css('color','green');
+             curColor = 'green';
         }
         if(e.altKey && e.which === 52){
-            $('.card-text-wrapper').css('color','black');
+            $('#card-' + curCard).css('color','black');
+            curColor = 'black';
         }
 
     // change type card of alt + 5
@@ -452,8 +457,9 @@ $(document).ready(function(){
 
                 $('#front-label').text('Full Text');
                 $('#back-label').text('Cloze');
-                curType = 'cloze';
 
+                curType = 'cloze';
+                database.ref('users').child(userInfo.uid).child('cards').child(curCard).update({'type':curType})
 
             }
             else if($('.switch-card').attr('data-state') === 'cloze'){
@@ -463,10 +469,10 @@ $(document).ready(function(){
 
                 $('#front-label').text('Front');
                 $('#back-label').text('Back');
-                curType = 'basic';
 
+                curType = 'basic';
+                database.ref('users').child(userInfo.uid).child('cards').child(curCard).update({'type':curType})
             }
-          database.ref('users').child(userInfo.uid).child('cards').child(curCard).update({'type':curType})
         }
 
     })

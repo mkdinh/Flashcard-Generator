@@ -1,9 +1,9 @@
  // * This file should define a Node module that exports a constructor for creating cloze-deletion flashcards, e.g.:
  //    `module.exports = ClozeCard;`
 
-var ClozeCard = function(text,cloze,num){
+var ClozeCard = function(text,cloze,num,color){
 	if (!(this instanceof ClozeCard)){
-        return new ClozeCard(text,cloze,num);
+        return new ClozeCard(text,cloze,num,color);
    	}
 
 	var checkMatch = new RegExp(cloze,'gi');
@@ -24,6 +24,7 @@ var ClozeCard = function(text,cloze,num){
 	this.num = num;
 
 	this.type = 'cloze'
+	this.color = color;
 }
 
 //  var firstPresidentCloze = ClozeCard(

@@ -306,7 +306,7 @@ $(document).ready(function(){
     // create new card when press right
     $(window).keydown(function(e){
          if(e.altKey && e.which === 39){
-
+            e.preventDefault()
              var updated = uploadCardFirebase();
              if(!updated){return}
 

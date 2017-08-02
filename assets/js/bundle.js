@@ -548,7 +548,7 @@ $(document).ready(function(){
             if($('#front').is(':focus')){
                var text = $('#front').val().trim().toLowerCase();
                var cloze = $('#back').val().trim().toLowerCase();
-               var partial = text.replace(cloze,'...');
+               var partial = text.replace(cloze,' ... ');
                $('#text-front-'+curCard).text(partial)
 
             }

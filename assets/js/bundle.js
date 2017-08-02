@@ -89,7 +89,7 @@ $(document).ready(function(){
 
     var database;
     var curType;
-    var curColor = 'black';
+    var curColor;
     var cardContent;
     var curCard;
     var totalCard;
@@ -120,7 +120,6 @@ $(document).ready(function(){
 
     function uploadCardFirebase(){
          // get current type
-         console.log(curType)
         // save previous card to firebase
         var curFrontText = $('#front').val().trim();
         var curBackText = $('#back').val().trim();
@@ -131,9 +130,9 @@ $(document).ready(function(){
         else if(curType === 'cloze'){
             cardContent = cloze(curFrontText,curBackText,curCard,curColor);
         }
+        console.log(cardContent)
         if(!$.isEmptyObject(cardContent)){
              database.ref('users').child(userInfo.uid).child('cards').child(cardContent.num).set(cardContent);
-             console.log('card updated to firebase')
              return true;
         }else{
           Materialize.toast('"' + curBackText + '"' + " is not part of " + '"' + curFrontText + '"', 2000)
@@ -142,8 +141,6 @@ $(document).ready(function(){
     }
 
     function updatecurContent(){
-        console.log(cardContainer[curCard]);
-        console.log(curCard);
         curType = cardContainer[curCard].type;
          // update input fields with card content
          if (curType === 'basic'){
@@ -156,6 +153,10 @@ $(document).ready(function(){
          }
          // update curType
          curType = cardContainer[curCard].type;
+
+         // update CurColor
+         curColor = cardContainer[curCard].color;
+         console.log(curColor);
          // update input fields
          $('#front').val(frontText);
          $('#back').val(backText);
@@ -314,8 +315,7 @@ $(document).ready(function(){
                     totalCard = cardContainer.length-1;
                     curCard = totalCard;
                     curType = cardContainer[totalCard].type;
-                    console.log(cardContainer)
-
+                    curColor = cardContainer[totalCard].color;
                     for(i = 1; i <= totalCard; i++){
                          // create new wrapper for card
                          var textWrapper = $('<div>');
@@ -339,19 +339,19 @@ $(document).ready(function(){
                          back.attr('id','text-back-'+i);
                          back.append(cardContainer[i].back)
                          textWrapper.append(back);
-                         console.log(textWrapper)
-                         $('#flashcard-content').append(textWrapper);
 
-                         // update input field
-                         if(cardContainer[totalCard].type === 'basic'){
-                              front.text(cardContainer[i].front);
-                              back.text(cardContainer[i].back);
-                         }else if(cardContainer[totalCard].type === 'cloze'){
-                              front.text(cardContainer[i].fullText);
-                              back.text(cardContainer[i].cloze);
-                         }
+                         $('#flashcard-content').append(textWrapper);
                     }
 
+                    // update input field
+                    if(cardContainer[totalCard].type === 'basic'){
+                      front.text(cardContainer[totalCard].front);
+                      back.text(cardContainer[totalCard].back);
+                    }else if(cardContainer[totalCard].type === 'cloze'){
+                      front.text(cardContainer[totalCard].fullText);
+                      back.text(cardContainer[totalCard].cloze);
+                    }
+                    console.log(curColor)
                     // update current content
                     updatecurContent()
                }
@@ -360,7 +360,7 @@ $(document).ready(function(){
           // update cardContainer on change of any child of user cards
           database.ref('users').child(userInfo.uid).child('cards').on('value', function(snap){
                cardContainer = snap.val()
-               console.log(cardContainer)
+
             })
         }
         else{
@@ -372,6 +372,8 @@ $(document).ready(function(){
             curCard = 1;
             totalCard = 1;
             cardContainer = [];
+            curColor = 'black';
+
             $('#flashcard-content').empty();
             createInitialCard();
 

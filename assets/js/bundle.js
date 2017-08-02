@@ -130,7 +130,6 @@ $(document).ready(function(){
         else if(curType === 'cloze'){
             cardContent = cloze(curFrontText,curBackText,curCard,curColor);
         }
-        console.log(cardContent)
         if(!$.isEmptyObject(cardContent)){
              database.ref('users').child(userInfo.uid).child('cards').child(cardContent.num).set(cardContent);
              return true;
@@ -223,13 +222,27 @@ $(document).ready(function(){
         // append new card to html
         $('#flashcard-content').prepend(textWrapper);
 
-        // create new card object to firebase
-        uploadCardFirebase();
+        if(userInfo){
+            // if logged in create new card object to firebase
+            uploadCardFirebase();
+        }else{
+            // else push object into local array
+            if(curType === 'basic'){
+            cardContent = basic('','',curCard,curColor);
+            cardContainer.push(cardContent);
+            }
+            else if(curType === 'cloze'){
+                cardContent = cloze('','',curCard,curColor);
+                cardContainer.push(cardContent);
+            }
+        }
     }
 
     function moveRight(){
-        var updated = uploadCardFirebase();
-        if(!updated){return}
+        if(userInfo){
+            var updated = uploadCardFirebase();
+            if(!updated){return}
+        }
 
         if(curCard === totalCard){
             // hide content
@@ -259,8 +272,10 @@ $(document).ready(function(){
     }
 
     function moveLeft(){
-       var updated = uploadCardFirebase();
-       if(!updated){return}
+       if(userInfo){
+           var updated = uploadCardFirebase();
+           if(!updated){return}
+        }
        // hide current page
        $('#card-'+curCard).hide();
 
@@ -387,9 +402,10 @@ $(document).ready(function(){
                     curCard = 1;
                     totalCard = 1;
                     cardContainer = [];
+                    curColor = 'black'
 
                     // create new card
-                    cardContainer[1] = basic('','',curCard);
+                    cardContainer[1] = basic('','',curCard,curColor);
                     uploadCardFirebase();
                     createInitialCard();
                }
@@ -468,6 +484,8 @@ $(document).ready(function(){
             cardContainer = [];
             curColor = 'black';
 
+            cardContainer[1] = basic('','',curCard,curColor);
+            console.log(cardContainer[1])
             $('#flashcard-content').empty();
             createInitialCard();
 

@@ -517,8 +517,8 @@ $(document).ready(function(){
 
     // ---------------- FIREBASE DATABASE APPLICATIONS ---------------------
 
-    // create new card when press ctrl + n
     $(window).keyup(function(e){
+        // create new card when press ctrl + n
         if(e.altKey && e.which === 78){
             e.preventDefault();
             if(userInfo){
@@ -532,8 +532,24 @@ $(document).ready(function(){
             // update current content
             updatecurContent();
         }
+
+        // // delete when pressed on delete btn
+        // if(e.which === 46){
+        //     if(userInfo){
+        //         // delete from firebase and update cardContainer if use is logged in
+        //         firebase.ref('user').child(userInfo.uid+'/cards').remove(curCard);
+        //         // update html content
+        //         $('#card-'curCard).remove();
+        //         // red
+        //         updatecurContent();
+        //     }else{
+        //         cardContainer.splice(curCard,1)
+        //         // update content
+        //         updatecurContent();
+        //     }
+        // }
     })
-    
+
     $(window).keydown(function(e){
          if(e.altKey && e.which === 39){
             e.preventDefault();

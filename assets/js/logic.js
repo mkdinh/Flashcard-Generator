@@ -437,7 +437,7 @@ $(document).ready(function(){
     // ---------------- FIREBASE DATABASE APPLICATIONS ---------------------
 
     // create new card when press ctrl + n
-    $(window).keydown(function(e){
+    $(window).keyup(function(e){
         if(e.altKey && e.which === 78){
             e.preventDefault();
             if(userInfo){
@@ -450,8 +450,10 @@ $(document).ready(function(){
 
             // update current content
             updatecurContent();
-            }
-
+        }
+    })
+    
+    $(window).keydown(function(e){
          if(e.altKey && e.which === 39){
             e.preventDefault();
             moveRight();

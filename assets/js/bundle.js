@@ -130,7 +130,7 @@ $(document).ready(function(){
         }
 
         console.log(cardContent)
-        
+
         if(userInfo){
             if(!$.isEmptyObject(cardContent)){
                  database.ref('users').child(userInfo.uid).child('cards').child(cardContent.num).set(cardContent);
@@ -392,7 +392,7 @@ $(document).ready(function(){
             userInfo = user;
             // Materialize.toast(message, displayLength, className, completeCallback);
             setTimeout(function(){
-                Materialize.toast('Hello ' + user.displayName, 4000)
+                Materialize.toast('Hello ' + user.displayName, 3000)
             },500) // 4000 is the duration of the toast
 
             // hide signin btn/show signout btn
@@ -413,7 +413,9 @@ $(document).ready(function(){
                     cardContainer[1] = basic('','',curCard,curInfo.color);
                     uploadCardFirebase();
                     createInitialCard();
-                    Materialize.toast('Click on the question icon for shortkeys',4000)
+                    setTimeout(function(){
+                        Materialize.toast('Click on the question icon for shortkeys',5000)
+                    },4000)
                }
                // else load firebase data
                else{

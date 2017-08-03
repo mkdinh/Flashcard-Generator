@@ -88,10 +88,9 @@ $(document).ready(function(){
     var cloze = require('./ClozeCard.js');
 
     var database;
-    var curType;
-    var curColor;
     var cardContent;
     var curCard;
+    var curInfo;
     var totalCard;
     var userInfo;
     var cardContainer;
@@ -121,55 +120,56 @@ $(document).ready(function(){
     function uploadCardFirebase(){
          // get current type
         // save previous card to firebase
-        var curFrontText = $('#front').val().trim();
-        var curBackText = $('#back').val().trim();
+        curInfo.front = $('#front').val().trim();
+        curInfo.back = $('#back').val().trim();
 
-        if(curType === 'basic'){
-            cardContent = basic(curFrontText,curBackText,curCard,curColor);
+        if(curInfo.type === 'basic'){
+            cardContent = basic(curInfo.front,curInfo.back,curCard,curInfo.color);
         }
-        else if(curType === 'cloze'){
-            cardContent = cloze(curFrontText,curBackText,curCard,curColor);
+        else if(curInfo.type === 'cloze'){
+            cardContent = cloze(curInfo.front,curInfo.back,curCard,curInfo.color);
         }
         if(!$.isEmptyObject(cardContent)){
              database.ref('users').child(userInfo.uid).child('cards').child(cardContent.num).set(cardContent);
              return true;
         }else{
-          Materialize.toast('"' + curBackText + '"' + " is not part of " + '"' + curFrontText + '"', 2000)
+          Materialize.toast('"' + curInfo.back + '"' + " is not part of " + '"' + curInfo.front + '"', 2000)
                return false
         }
     }
 
     function updatecurContent(){
-        curType = cardContainer[curCard].type;
+        curInfo = cardContainer[curCard];
+        curInfo.type = cardContainer[curCard].type;
          // update input fields with card content
-         if (curType === 'basic'){
-              var frontText = cardContainer[curCard].front;
-              var backText = cardContainer[curCard].back;
+         if (curInfo.type === 'basic'){
+              var front = cardContainer[curCard].front;
+              var back = cardContainer[curCard].back;
          }
-         if (curType === 'cloze'){
-              var frontText = cardContainer[curCard].fullText;
-              var backText = cardContainer[curCard].cloze;
+         if (curInfo.type === 'cloze'){
+              var front = cardContainer[curCard].fullText;
+              var back = cardContainer[curCard].cloze;
          }
          // update curType
-         curType = cardContainer[curCard].type;
+         curInfo.type = cardContainer[curCard].type;
 
          // update CurColor
-         curColor = cardContainer[curCard].color;
+         curInfo.color = cardContainer[curCard].color;
  
          // update input fields
-         $('#front').val(frontText);
-         $('#back').val(backText);
+         $('#front').val(front);
+         $('#back').val(back);
 
          // show previous page
        $('#card-'+curCard).show();
 
        // update card count
        $('.card-count').html(curCard+ '/' + totalCard)
-       console.log(curCard,totalCard)
+
        // refocus front input
        $('#front').focus();
 
-         if(curType  === 'cloze'){
+         if(curInfo.type  === 'cloze'){
             $('#card-state-basic').css('font-weight','normal');
             $('#card-state-cloze').css('font-weight','bold');
             $('.switch-card').attr('data-state','cloze')
@@ -178,7 +178,7 @@ $(document).ready(function(){
             $('#back-label').text('Cloze');
 
          }
-         else if(curType === 'basic'){
+         else if(curInfo.type === 'basic'){
             $('#card-state-basic').css('font-weight','bold');
             $('#card-state-cloze').css('font-weight','normal');
             $('.switch-card').attr('data-state','basic');
@@ -186,7 +186,7 @@ $(document).ready(function(){
             $('#front-label').text('Front');
             $('#back-label').text('Back');
 
-            curType = 'basic';
+            curInfo.type = 'basic';
          }
      }
 
@@ -227,12 +227,12 @@ $(document).ready(function(){
             uploadCardFirebase();
         }else{
             // else push object into local array
-            if(curType === 'basic'){
-            cardContent = basic('','',curCard,curColor);
+            if(curInfo.type === 'basic'){
+            cardContent = basic('','',curCard,curInfo.color);
             cardContainer.push(cardContent);
             }
-            else if(curType === 'cloze'){
-                cardContent = cloze('','',curCard,curColor);
+            else if(curInfo.type === 'cloze'){
+                cardContent = cloze('','',curCard,curInfo.color);
                 cardContainer.push(cardContent);
             }
         }
@@ -398,14 +398,14 @@ $(document).ready(function(){
             database.ref('users').child(userInfo.uid).once('value')
             .then(function(snap){
                if(!snap.child('cards').exists()){
-                    curType = 'basic'
+                    curInfo.type = 'basic';
                     curCard = 1;
                     totalCard = 1;
                     cardContainer = [];
-                    curColor = 'black'
+                    curInfo.color = 'black';
 
                     // create new card
-                    cardContainer[1] = basic('','',curCard,curColor);
+                    cardContainer[1] = basic('','',curCard,curInfo.color);
                     uploadCardFirebase();
                     createInitialCard();
                }
@@ -414,9 +414,8 @@ $(document).ready(function(){
                     cardContainer = snap.child('cards').val();
                     totalCard = cardContainer.length-1;
                     curCard = totalCard;
-                    curType = cardContainer[totalCard].type;
-                    curColor = cardContainer[totalCard].color;
-
+                    curInfo = cardContainer[curCard];
+  
                     for(i = 1; i <= totalCard; i++){
                          // create new wrapper for card
                          var textWrapper = $('<div>');
@@ -467,10 +466,22 @@ $(document).ready(function(){
                }
             })
 
-          // update cardContainer on change of any child of user cards
-          database.ref('users').child(userInfo.uid).child('cards').on('value', function(snap){
-               cardContainer = snap.val()
+            // update cardContainer on change of any child of user cards
+            database.ref('users').child(userInfo.uid).child('cards').on('value', function(snap){
+                cardContainer = snap.val();
             })
+
+            setTimeout(function(){
+                if(curInfo.type === 'basic'){
+                        database.ref('users').child(userInfo.uid+'/'+'cards'+"/"+curCard).onDisconnect()
+                            .set(basic(curInfo.front,curInfo.back,curCard,curInfo.color))
+                }
+                console.log(curInfo)
+                if(curInfo.type === 'cloze'){
+                        database.ref('users').child(userInfo.uid+'/'+'cards'+"/"+curCard).onDisconnect()
+                            .set(cloze(curInfo.front,curInfo.back,curCard,curInfo.color))
+                }
+            },4000)
 
         }
         else{
@@ -478,14 +489,13 @@ $(document).ready(function(){
             $('#modal-signin-btn').show();
             $('#signout').hide();
 
-            curType = 'basic';
             curCard = 1;
             totalCard = 1;
             cardContainer = [];
-            curColor = 'black';
 
-            cardContainer[1] = basic('','',curCard,curColor);
-            console.log(cardContainer[1])
+            cardContainer[1] = basic('','',1,'black');
+            curInfo = cardContainer[1];
+
             $('#flashcard-content').empty();
             createInitialCard();
 
@@ -503,6 +513,9 @@ $(document).ready(function(){
     $(window).keydown(function(e){
         if(e.altKey && e.which === 78){
             e.preventDefault();
+
+            //save current card
+            uploadCardFirebase();
 
             // create new Card
             createCard();
@@ -552,18 +565,21 @@ $(document).ready(function(){
 
     // texts on front and back input field show on card
     $('.input-field').keyup(function(e){
-        if(curType === 'basic'){
+        if(curInfo.type === 'basic'){
              if($('#front').is(':focus')){
                  var text = $('#front').val().trim();
                  $('#text-front-'+curCard).text(text)
+                 curInfo.front = text;
+                 console.log(curInfo)
              }
              if($('#back').is(':focus')){
                  var text = $('#back').val().trim();
                  $('#text-back-'+curCard).text(text)
+                 curInfo.back = text;
             }
        }
 
-       if(curType === 'cloze'){
+       if(curInfo.type === 'cloze'){
             if($('#front').is(':focus')){
                var text = $('#front').val().trim().toLowerCase();
                var cloze = $('#back').val().trim().toLowerCase();
@@ -583,19 +599,19 @@ $(document).ready(function(){
     // change color on alt + 1-4
         if(e.altKey && e.which === 49){
             $('#card-' + curCard).css('color','red');
-            curColor = 'red';
+            curInfo.color = 'red';
         }
         if(e.altKey && e.which === 50){
             $('#card-' + curCard).css('color','blue');
-            curColor = 'blue';
+            curInfo.color = 'blue';
         }
         if(e.altKey && e.which === 51){
-             $('#card-' + curCard).css('color','green');
-             curColor = 'green';
+            $('#card-' + curCard).css('color','green');
+            curInfo.color = 'green';
         }
         if(e.altKey && e.which === 52){
             $('#card-' + curCard).css('color','black');
-            curColor = 'black';
+            curInfo.color = 'black';
         }
 
     // change type card of alt + 5
@@ -608,8 +624,8 @@ $(document).ready(function(){
                 $('#front-label').text('Full Text');
                 $('#back-label').text('Cloze');
 
-                curType = 'cloze';
-                database.ref('users').child(userInfo.uid).child('cards').child(curCard).update({'type':curType})
+                curInfo.type = 'cloze';
+                // database.ref('users').child(userInfo.uid).child('cards').child(curCard).update({'type':curType})
 
             }
             else if($('.switch-card').attr('data-state') === 'cloze'){
@@ -620,9 +636,15 @@ $(document).ready(function(){
                 $('#front-label').text('Front');
                 $('#back-label').text('Back');
 
-                curType = 'basic';
-                database.ref('users').child(userInfo.uid).child('cards').child(curCard).update({'type':curType})
+                curInfo.type = 'basic';
+                // database.ref('users').child(userInfo.uid).child('cards').child(curCard).update({'type':curType})
             }
+        }
+
+        if(e.altKey && e.keyCode === 83){
+            //save current card
+            uploadCardFirebase();
+            alert('Current Card Saved!')
         }
 
     })
@@ -639,7 +661,7 @@ $(document).ready(function(){
     });
 
     // toggle between front and back on tab
-    $('.input-field').keydown(function(e){
+    $('.text-field').keydown(function(e){
         if(e.which === 9){
             if($('#front').is(':focus')){
                 e.preventDefault();

@@ -118,29 +118,37 @@ $(document).ready(function(){
     }
 
     function uploadCardFirebase(){
-         // get current type
+        // get current type
         // save previous card to firebase
         curInfo.front = $('#front').val().trim();
         curInfo.back = $('#back').val().trim();
-
         if(curInfo.type === 'basic'){
             cardContent = basic(curInfo.front,curInfo.back,curCard,curInfo.color);
         }
         else if(curInfo.type === 'cloze'){
             cardContent = cloze(curInfo.front,curInfo.back,curCard,curInfo.color);
         }
-        if(!$.isEmptyObject(cardContent)){
-             database.ref('users').child(userInfo.uid).child('cards').child(cardContent.num).set(cardContent);
-             return true;
+
+        console.log(cardContent)
+        
+        if(userInfo){
+            if(!$.isEmptyObject(cardContent)){
+                 database.ref('users').child(userInfo.uid).child('cards').child(cardContent.num).set(cardContent);
+                 return true;
+            }else{
+              Materialize.toast('"' + curInfo.back + '"' + " is not part of " + '"' + curInfo.front + '"', 2000)
+                   return false
+            }
         }else{
-          Materialize.toast('"' + curInfo.back + '"' + " is not part of " + '"' + curInfo.front + '"', 2000)
-               return false
+            cardContainer[curCard] = cardContent;
+            return true
         }
     }
 
     function updatecurContent(){
         curInfo = cardContainer[curCard];
         curInfo.type = cardContainer[curCard].type;
+
          // update input fields with card content
          if (curInfo.type === 'basic'){
               var front = cardContainer[curCard].front;
@@ -161,13 +169,13 @@ $(document).ready(function(){
          $('#back').val(back);
 
          // show previous page
-       $('#card-'+curCard).show();
+         $('#card-'+curCard).show();
 
-       // update card count
-       $('.card-count').html(curCard+ '/' + totalCard)
+         // update card count
+         $('.card-count').html(curCard+ '/' + totalCard)
 
-       // refocus front input
-       $('#front').focus();
+         // refocus front input
+         $('#front').focus();
 
          if(curInfo.type  === 'cloze'){
             $('#card-state-basic').css('font-weight','normal');
@@ -239,11 +247,9 @@ $(document).ready(function(){
     }
 
     function moveRight(){
-        if(userInfo){
-            var updated = uploadCardFirebase();
-            if(!updated){return}
-        }
-
+        var updated = uploadCardFirebase();
+        if(!updated){return}
+        
         if(curCard === totalCard){
             // hide content
             $('#card-'+curCard).hide();
@@ -272,10 +278,9 @@ $(document).ready(function(){
     }
 
     function moveLeft(){
-       if(userInfo){
-           var updated = uploadCardFirebase();
-           if(!updated){return}
-        }
+       var updated = uploadCardFirebase();
+       if(!updated){return}
+
        // hide current page
        $('#card-'+curCard).hide();
 
@@ -408,6 +413,7 @@ $(document).ready(function(){
                     cardContainer[1] = basic('','',curCard,curInfo.color);
                     uploadCardFirebase();
                     createInitialCard();
+                    Materialize.toast('Click on the question icon for shortkeys',4000)
                }
                // else load firebase data
                else{
@@ -476,7 +482,6 @@ $(document).ready(function(){
                         database.ref('users').child(userInfo.uid+'/'+'cards'+"/"+curCard).onDisconnect()
                             .set(basic(curInfo.front,curInfo.back,curCard,curInfo.color))
                 }
-                console.log(curInfo)
                 if(curInfo.type === 'cloze'){
                         database.ref('users').child(userInfo.uid+'/'+'cards'+"/"+curCard).onDisconnect()
                             .set(cloze(curInfo.front,curInfo.back,curCard,curInfo.color))
@@ -492,6 +497,7 @@ $(document).ready(function(){
             curCard = 1;
             totalCard = 1;
             cardContainer = [];
+            userInfo = undefined;
 
             cardContainer[1] = basic('','',1,'black');
             curInfo = cardContainer[1];
@@ -513,9 +519,10 @@ $(document).ready(function(){
     $(window).keydown(function(e){
         if(e.altKey && e.which === 78){
             e.preventDefault();
-
+            if(userInfo){
             //save current card
             uploadCardFirebase();
+            }
 
             // create new Card
             createCard();
@@ -544,6 +551,8 @@ $(document).ready(function(){
         moveRight();
     })
 
+    // ---------------- LOCAL STORAGE FOR NOTIFCATION -------------------- 
+
     // ---------------- HTML DOM INTERACTIONS ----------------------
 
 
@@ -570,7 +579,6 @@ $(document).ready(function(){
                  var text = $('#front').val().trim();
                  $('#text-front-'+curCard).text(text)
                  curInfo.front = text;
-                 console.log(curInfo)
              }
              if($('#back').is(':focus')){
                  var text = $('#back').val().trim();
@@ -642,9 +650,13 @@ $(document).ready(function(){
         }
 
         if(e.altKey && e.keyCode === 83){
-            //save current card
-            uploadCardFirebase();
-            alert('Current Card Saved!')
+            if(userInfo){
+                //save current card
+                uploadCardFirebase();
+                alert('Current Card Saved!')
+            }else{
+                alert('You need to log in in order to save your progress')
+            }
         }
 
     })

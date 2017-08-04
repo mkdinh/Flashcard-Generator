@@ -626,4 +626,27 @@ $(document).ready(function(){
     })
 
     // Fn Bar
+
+    $('#fn-add-btn').click(function(){
+        if(userInfo){
+        //save current card
+        uploadCardFirebase();
+        }
+
+        // create new Card
+        createCard();
+
+        // update current content
+        updatecurContent();
+   })
+
+      $('#fn-save-btn').click(function(){
+           if(userInfo){
+               //save current card
+               uploadCardFirebase();
+               alert('Current Card Saved!')
+           }else{
+               alert('You need to log in in order to save your progress')
+           }
+      })
 })

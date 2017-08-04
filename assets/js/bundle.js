@@ -479,20 +479,15 @@ $(document).ready(function(){
                 cardContainer = snap.val();
             })
 
-		  function saveOnDisconnect(){
-			  console.log(curInfo)
-			  if(curInfo.type === 'basic'){
-				  cardContent = basic(curInfo.front,curInfo.back,curCard,curInfo.color);
-			  }
-			  else if(curInfo.type === 'cloze'){
-				  cardContent = cloze(curInfo.fullText,curInfo.cloze,curCard,curInfo.color);
-			  }
-			  return cardContent;
-		  }
-
             setTimeout(function(){
+                if(curInfo.type === 'basic'){
                         database.ref('users').child(userInfo.uid+'/'+'cards'+"/"+curCard).onDisconnect()
-                            .set(saveOnDisconnect())
+                            .set(basic(curInfo.front,curInfo.back,curCard,curInfo.color))
+                }
+                if(curInfo.type === 'cloze'){
+                        database.ref('users').child(userInfo.uid+'/'+'cards'+"/"+curCard).onDisconnect()
+                            .set(cloze(curInfo.front,curInfo.back,curCard,curInfo.color))
+                }
             },4000)
 
         }
@@ -712,6 +707,29 @@ $(document).ready(function(){
     })
 
     // Fn Bar
+
+    $('#fn-add-btn').click(function(){
+        if(userInfo){
+        //save current card
+        uploadCardFirebase();
+        }
+
+        // create new Card
+        createCard();
+
+        // update current content
+        updatecurContent();
+   })
+
+      $('#fn-save-btn').click(function(){
+           if(userInfo){
+               //save current card
+               uploadCardFirebase();
+               alert('Current Card Saved!')
+           }else{
+               alert('You need to log in in order to save your progress')
+           }
+      })
 })
 
 },{"./BasicCard.js":1,"./ClozeCard.js":2}]},{},[3]);

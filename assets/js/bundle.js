@@ -163,7 +163,7 @@ $(document).ready(function(){
 
          // update CurColor
          curInfo.color = cardContainer[curCard].color;
- 
+
          // update input fields
          $('#front').val(front);
          $('#back').val(back);
@@ -249,7 +249,7 @@ $(document).ready(function(){
     function moveRight(){
         var updated = uploadCardFirebase();
         if(!updated){return}
-        
+
         if(curCard === totalCard){
             // hide content
             $('#card-'+curCard).hide();
@@ -262,7 +262,7 @@ $(document).ready(function(){
 
                 // increase current page by 1
                 curCard++;
-            }    
+            }
 
             // update card html
             updatecurContent()
@@ -423,7 +423,7 @@ $(document).ready(function(){
                     totalCard = cardContainer.length-1;
                     curCard = totalCard;
                     curInfo = cardContainer[curCard];
-  
+
                     for(i = 1; i <= totalCard; i++){
                          // create new wrapper for card
                          var textWrapper = $('<div>');
@@ -439,12 +439,12 @@ $(document).ready(function(){
                          var front = $('<p>');
                          front.addClass('card-text card-text-front center');
                          front.attr('id','text-front-'+i);
-    
+
                          // new back
                          var back = $('<p>');
                          back.addClass('card-text card-text-back center');
                          back.attr('id','text-back-'+i);
-                         
+
                          if(cardContainer[i].type === 'basic'){
                             front.text(cardContainer[i].front);
                             back.text(cardContainer[i].back);
@@ -468,7 +468,7 @@ $(document).ready(function(){
                       $('#front').val(cardContainer[totalCard].fullText);
                       $('#back').val(cardContainer[totalCard].cloze);
                     }
-  
+
                     // update current content
                     updatecurContent()
                }
@@ -479,15 +479,20 @@ $(document).ready(function(){
                 cardContainer = snap.val();
             })
 
+		  function saveOnDisconnect(){
+			  console.log(curInfo)
+			  if(curInfo.type === 'basic'){
+				  cardContent = basic(curInfo.front,curInfo.back,curCard,curInfo.color);
+			  }
+			  else if(curInfo.type === 'cloze'){
+				  cardContent = cloze(curInfo.fullText,curInfo.cloze,curCard,curInfo.color);
+			  }
+			  return cardContent;
+		  }
+
             setTimeout(function(){
-                if(curInfo.type === 'basic'){
                         database.ref('users').child(userInfo.uid+'/'+'cards'+"/"+curCard).onDisconnect()
-                            .set(basic(curInfo.front,curInfo.back,curCard,curInfo.color))
-                }
-                if(curInfo.type === 'cloze'){
-                        database.ref('users').child(userInfo.uid+'/'+'cards'+"/"+curCard).onDisconnect()
-                            .set(cloze(curInfo.front,curInfo.back,curCard,curInfo.color))
-                }
+                            .set(saveOnDisconnect())
             },4000)
 
         }
@@ -562,7 +567,7 @@ $(document).ready(function(){
             moveLeft();
           }
     })
-    
+
     //toggle click on arrow to key press arrow fn
     $("#move-left").click(function(){
         moveLeft();
@@ -571,7 +576,7 @@ $(document).ready(function(){
         moveRight();
     })
 
-    // ---------------- LOCAL STORAGE FOR NOTIFCATION -------------------- 
+    // ---------------- LOCAL STORAGE FOR NOTIFCATION --------------------
 
     // ---------------- HTML DOM INTERACTIONS ----------------------
 
@@ -705,6 +710,8 @@ $(document).ready(function(){
             }
         }
     })
+
+    // Fn Bar
 })
 
 },{"./BasicCard.js":1,"./ClozeCard.js":2}]},{},[3]);

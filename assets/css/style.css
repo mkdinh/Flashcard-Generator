@@ -34,6 +34,20 @@
 	display:none;
 }
 
+/*fn btn*/
+#fn-btn-wrapper{
+	position: absolute;
+	bottom: .2rem;
+	right: .5rem;
+	background-color: rgba(255,255,255,.7);
+}
+#fn-btn-list{
+	margin:0;
+}
+
+#fn-btn-list li{
+	line-height:0
+}
 /*MODAL*/
 
 .modal{
@@ -75,7 +89,7 @@
 
 /*Main Content*/
 #main-content{
-	margin:1.5rem 0 0 0 ;	
+	margin:1.5rem 0 0 0 ;
 }
 
 /*Chevrons*/
@@ -107,7 +121,7 @@
 }
 
 .card-text-front{
-	font-weight:bold;	
+	font-weight:bold;
 }
 
 .card-text-back{
@@ -126,8 +140,8 @@
 .color-list{
 	display:inline;
 	margin:0;
-	padding:0;	
-	height:auto;	
+	padding:0;
+	height:auto;
 }
 
 li .material-icons{
@@ -135,7 +149,7 @@ li .material-icons{
 }
 
 .switch-card{
-	display:inline-block; 
+	display:inline-block;
 	font-size:1rem;
 	vertical-align: middle
 }
@@ -164,6 +178,3 @@ li .material-icons{
 #front:focus + label,#back:focus + label{
 	color:#1a237e;
 }
-
-
-
